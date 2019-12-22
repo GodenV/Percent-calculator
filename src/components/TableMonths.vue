@@ -2,7 +2,8 @@
     <a-table class="table"
              :columns="this.columns"
              :dataSource="this.data"
-             :pagination="{ pageSize: 7 }">
+             :pagination="{ pageSize: 7 }"
+                :scroll="{ x: 600 }">
     </a-table>
 </template>
 
