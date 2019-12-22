@@ -1,7 +1,8 @@
 <template>
-    <a-table class = "table"
-            :columns="this.columns"
-            :dataSource="this.data">
+    <a-table class="table"
+             :columns="this.columns"
+             :dataSource="this.data"
+             :pagination="{ pageSize: 7 }">
     </a-table>
 </template>
 
@@ -14,7 +15,7 @@
 </script>
 
 <style scoped>
-    .table{
+    .table {
         margin-top: 3vh;
         width: 70vw;
     }

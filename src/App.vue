@@ -21,25 +21,25 @@
             width: '20%',
         },
         {
-            title: 'Остаток',
+            title: 'Остаток (BYN)',
             dataIndex: 'balance',
             sorter: true,
             width: '20%',
         },
         {
-            title: 'Долг',
+            title: 'Долг (BYN)',
             dataIndex: 'debt',
             sorter: true,
             width: '20%',
         },
         {
-            title: 'Проценты',
+            title: 'Проценты (BYN)',
             dataIndex: 'percent',
             sorter: true,
             width: '20%',
         },
         {
-            title: 'Платеж',
+            title: 'Платеж (BYN)',
             dataIndex: 'payment',
             sorter: true,
             width: '20%',
@@ -48,18 +48,29 @@
 
     export default {
         name: 'app',
+        mounted() {
+            fetch('https://calculatepercent.herokuapp.com/')
+                .then(response => response.json())
+                .then((result) => {
+                    this.creditInfo.maxCreditTerm = result['maxCreditTerm'];
+                    this.creditInfo.minCreditTerm = result['minCreditTerm'];
+                    this.creditInfo.maxCreditSum = result['maxCreditSum'];
+                    this.creditInfo.minCreditSum = result['minCreditSum'];
+                })
+        },
         data() {
             return {
                 buf: 0,
                 difCredit: [{}],
                 columns,
                 creditInfo: {
-                    creditDuration: 12,
-                    creditSum: 100,
-                    maxCreditTerm: 50,
-                    minCreditTerm: 12,
-                    minCreditSum: 100.0,
-                    maxCreditSum: 500000.0,
+                    creditDuration: 0,
+                    creditSum: 0,
+                    creditDifAllSum: 0,
+                    maxCreditTerm: 0,
+                    minCreditTerm: 0,
+                    minCreditSum: 0,
+                    maxCreditSum: 0,
                     percent: 0.1,
                     accountMethod: "equ",
                 }
@@ -80,10 +91,12 @@
                 let allMoneyBuf = this.creditInfo.creditSum;
                 let percentMoney;
                 this.difCredit = [];
+                this.creditInfo.creditDifAllSum = allMoneyBuf;
                 for (let i = 0; i < this.creditInfo.creditDuration; i++) {
-                    percentMoney = (allMoneyBuf * this.creditInfo.percent) / ((date.isLeapYear() ? 366 : 365) * date.getDaysInMonth());
+                    percentMoney = (allMoneyBuf * this.creditInfo.percent / 100) / (date.isLeapYear() ? 366 : 365) * date.getDaysInMonth();
+                    this.creditInfo.creditDifAllSum += Math.round(percentMoney * 100) / 100;
                     this.difCredit.push({
-                        payment: Math.round(everyMonthSum + percentMoney * 100) / 100,
+                        payment: Math.round((everyMonthSum + percentMoney) * 100) / 100,
                         months: date.toLocaleString('ru', {month: 'long'}) + " " + date.getFullYear(),
                         percent: Math.round(percentMoney * 100) / 100,
                         debt: Math.round(everyMonthSum * 100) / 100,

@@ -34,6 +34,7 @@
         </div>
         <div v-else class=tableContainer>
             <a-button @click = "$emit('onClick')">Рассчитать</a-button>
+             <a-statistic title="Общая сумма выплаты (BYN)" :precision="2" :value="creditInfo.creditDifAllSum"/>
             <TableMonths v-bind:columns="this.columns"
                          v-bind:data='this.diffCreditInfo'/>
         </div>
